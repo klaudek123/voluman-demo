@@ -7,7 +7,7 @@ import com.example.demo.Schedule.Decision;
 import com.example.demo.Action.Action;
 import com.example.demo.Action.ActionRepository;
 import com.example.demo.Action.ActionService;
-import com.example.demo.Volunteer.VolunteerDto.VolunteerRole;
+import com.example.demo.Volunteer.Role.VolunteerRole;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -53,14 +53,14 @@ public class VolunteerServiceTest {
     public void testPromoteToLeader() {
         Long idVolunteer = 1L;
         Volunteer volunteer = new Volunteer();
-        volunteer.setRole(VolunteerRole.VOLUNTEER);
+        volunteer.setVolunteerRole(VolunteerRole.VOLUNTEER);
 
         when(volunteerRepository.findByVolunteerIdAndRole(idVolunteer, VolunteerRole.VOLUNTEER)).thenReturn(Optional.of(volunteer));
 
         volunteerService.promoteToLeader(idVolunteer);
 
         verify(volunteerRepository, times(1)).save(volunteer);
-        assertEquals(VolunteerRole.LEADER, volunteer.getRole());
+        assertEquals(VolunteerRole.LEADER, volunteer.getVolunteerRole());
     }
 
     @Test
@@ -74,7 +74,7 @@ public class VolunteerServiceTest {
         volunteerService.degradeLeader(idVolunteer);
 
         verify(volunteerRepository, times(1)).save(volunteer);
-        assertEquals(VolunteerRole.VOLUNTEER, volunteer.getRole());
+        assertEquals(VolunteerRole.VOLUNTEER, volunteer.getVolunteerRole());
     }
 
     @Test

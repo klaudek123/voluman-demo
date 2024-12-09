@@ -1,7 +1,7 @@
 package com.example.demo.Volunteer;
 
 import com.example.demo.Volunteer.VolunteerDto.AdminRequest;
-import com.example.demo.Volunteer.VolunteerDto.VolunteerRole;
+import com.example.demo.Volunteer.Role.VolunteerRole;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;

@@ -27,7 +27,7 @@ import com.example.demo.Volunteer.Duty.DutyInterval.DutyIntervalDto;
 import com.example.demo.Volunteer.Duty.DutyInterval.DutyIntervalRepository;
 import com.example.demo.Volunteer.Duty.DutyInterval.DutyIntervalStatus;
 import com.example.demo.Volunteer.VolunteerDto.VolunteerDto;
-import com.example.demo.Volunteer.VolunteerDto.VolunteerRole;
+import com.example.demo.Volunteer.Role.VolunteerRole;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;

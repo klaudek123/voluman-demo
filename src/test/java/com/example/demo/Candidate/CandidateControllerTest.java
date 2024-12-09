@@ -5,7 +5,7 @@ import com.example.demo.Volunteer.Candidate.CandidateController;
 import com.example.demo.Volunteer.Candidate.CandidateRepository;
 import com.example.demo.Volunteer.Candidate.CandidateService;
 import com.example.demo.Volunteer.VolunteerRepository;
-import com.example.demo.Volunteer.VolunteerDto.VolunteerRole;
+import com.example.demo.Volunteer.Role.VolunteerRole;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -92,7 +92,7 @@ class CandidateControllerTest {
     @Test
     void testGetCandidate_ReturnsForbidden_WhenVolunteerIsNotRecruiter() {
         Long recruiterId = 1L;
-        Long candidateId = 1L;
+        long candidateId = 1L;
 
 
         when(volunteerRepository.existsByVolunteerIdAndRole(recruiterId, VolunteerRole.RECRUITER)).thenReturn(false);
@@ -165,7 +165,7 @@ class CandidateControllerTest {
         assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
         verify(volunteerRepository, times(1)).existsByVolunteerIdAndRole(recruiterId, VolunteerRole.RECRUITER);
         verify(candidateRepository, never()).findById(candidateId);
-        verify(candidateService, never()).acceptCandidate(any());
+        verify(candidateService, never()).acceptCandidate(any(), any());
     }
 
     @Test
@@ -182,7 +182,7 @@ class CandidateControllerTest {
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
         verify(volunteerRepository, times(1)).existsByVolunteerIdAndRole(recruiterId, VolunteerRole.RECRUITER);
         verify(candidateRepository, times(1)).findById(candidateId);
-        verify(candidateService, never()).acceptCandidate(any());
+        verify(candidateService, never()).acceptCandidate(any(), any());
     }
 
     @Test
@@ -199,7 +199,7 @@ class CandidateControllerTest {
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(candidate, response.getBody());
-        verify(candidateService, times(1)).acceptCandidate(Optional.of(candidate));
+        verify(candidateService, times(1)).acceptCandidate(candidate.getCandidateId(), recruiterId);
     }
 
     @Test

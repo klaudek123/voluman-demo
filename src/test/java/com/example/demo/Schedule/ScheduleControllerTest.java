@@ -4,7 +4,7 @@ import com.example.demo.Volunteer.Duty.DutyInterval.DutyIntervalDto;
 import com.example.demo.Schedule.ScheduleDto.*;
 import com.example.demo.Volunteer.VolunteerDto.LeaderDto;
 import com.example.demo.Volunteer.VolunteerRepository;
-import com.example.demo.Volunteer.VolunteerDto.VolunteerRole;
+import com.example.demo.Volunteer.Role.VolunteerRole;
 import com.example.demo.Action.Action;
 import com.example.demo.Action.ActionRepository;
 import com.example.demo.Action.ActionDto.ActionDto;

@@ -3,10 +3,7 @@ package com.example.demo.Action;
 import com.example.demo.Action.ActionDto.*;
 import com.example.demo.Log.EventType;
 import com.example.demo.Log.LogService;
-import com.example.demo.Log.LogUserDto;
-import com.example.demo.Volunteer.Volunteer;
-import com.example.demo.Volunteer.VolunteerDetails;
-import com.example.demo.Volunteer.VolunteerDto.VolunteerRole;
+import com.example.demo.Volunteer.Role.VolunteerRole;
 import com.example.demo.Volunteer.VolunteerRepository;
 import com.example.demo.Volunteer.VolunteerService;
 import org.springframework.http.HttpStatus;
@@ -14,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 
 @RestController

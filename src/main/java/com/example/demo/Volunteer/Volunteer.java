@@ -4,7 +4,7 @@ import com.example.demo.Volunteer.Preferences.Preferences;
 import com.example.demo.Volunteer.Availability.Availability;
 import com.example.demo.Volunteer.Duty.Duty;
 import com.example.demo.Action.Action;
-import com.example.demo.Volunteer.VolunteerDto.VolunteerRole;
+import com.example.demo.Volunteer.Role.VolunteerRole;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
@@ -46,7 +46,7 @@ public class Volunteer {
     private Preferences preferences = new Preferences();
 
     @OneToMany(mappedBy = "volunteer", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference // Zarządzany odnośnik dla serializacji
+    @JsonManagedReference
     private List<Availability> availabilities = new ArrayList<>();
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
@@ -55,11 +55,11 @@ public class Volunteer {
             joinColumns = @JoinColumn(name = "volunteer_id"),
             inverseJoinColumns = @JoinColumn(name = "action_id")
     )
-    @JsonIgnore // Ignoruj przy serializacji, aby uniknąć rekurencji
+    @JsonIgnore
     private Set<Action> actions = new HashSet<>(); //relacja
 
     @OneToMany(mappedBy = "volunteer", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference // Ignoruj przy serializacji, aby uniknąć rekurencji
+    @JsonManagedReference
     private Set<Duty> duties = new HashSet<>();
 
 

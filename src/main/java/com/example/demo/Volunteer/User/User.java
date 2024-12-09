@@ -1,7 +1,6 @@
 package com.example.demo.Volunteer.User;
 
 
-import com.example.demo.Volunteer.Preferences.Preferences;
 import com.example.demo.Volunteer.Volunteer;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
@@ -33,7 +32,7 @@ public class User {
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "volunteer_id", referencedColumnName = "volunteerId")
-    @JsonIgnore // Ignoruj przy serializacji, aby uniknąć rekurencji
+    @JsonIgnore
     private Volunteer volunteer = new Volunteer();
 }
 

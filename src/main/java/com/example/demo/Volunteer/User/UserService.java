@@ -44,19 +44,14 @@ public class UserService {
 
     protected String generatePassword(String phone) {
         try {
-            // Add the salt to the phone number
             String phoneWithSalt = SALT + phone;
 
-            // Create a message digest instance for SHA-256
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
 
-            // Compute the hash
             byte[] hash = digest.digest(phoneWithSalt.getBytes(StandardCharsets.UTF_8));
 
-            // Encode the hash to Base64 to get a readable password
             String base64Hash = Base64.getEncoder().encodeToString(hash);
 
-            // Return only 12 characters of the Base64 encoded hash
             return base64Hash.substring(2, 14);
 
         } catch (NoSuchAlgorithmException e) {

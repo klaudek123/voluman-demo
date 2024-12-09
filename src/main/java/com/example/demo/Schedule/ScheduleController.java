@@ -4,11 +4,8 @@ import com.example.demo.Action.ActionDto.ActionScheduleDto;
 import com.example.demo.Action.ActionRepository;
 import com.example.demo.Log.EventType;
 import com.example.demo.Log.LogService;
-import com.example.demo.Log.LogUserDto;
 import com.example.demo.Schedule.ScheduleDto.*;
-import com.example.demo.Volunteer.Volunteer;
-import com.example.demo.Volunteer.VolunteerDetails;
-import com.example.demo.Volunteer.VolunteerDto.VolunteerRole;
+import com.example.demo.Volunteer.Role.VolunteerRole;
 import com.example.demo.Volunteer.VolunteerRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.Objects;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("")
@@ -56,8 +52,8 @@ public class ScheduleController {
         }
     }
 
-    @PostMapping("/actions/{actionId}/needs")
-    public ResponseEntity<?> chooseNeed(
+    @PostMapping("/actions/{actionId}/demands")
+    public ResponseEntity<?> chooseDemands(
             @PathVariable("actionId") Long actionId,
             @RequestParam(defaultValue = "0") int year,
             @RequestParam(defaultValue = "0") int week,
@@ -68,6 +64,7 @@ public class ScheduleController {
                 return ResponseEntity.notFound().build();
             }
             if (!volunteerRepository.existsByVolunteerIdAndRole(actionNeedRequest.getLeaderId(), VolunteerRole.LEADER)) {
+
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
             }
             if (!Objects.equals(actionRepository.findById(actionId).get().getLeader().leaderId(), actionNeedRequest.getLeaderId())) {
@@ -121,7 +118,7 @@ public class ScheduleController {
 
             // Sprawdzenie, czy data w żądaniu zgadza się z oczekiwaną datą
             if (!expectedDate.equals(requestDate)) {
-                return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
+                return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(expectedDate);
             }
 
             // Wywołanie usługi generowania harmonogramu
