@@ -1,14 +1,10 @@
 package com.example.demo.Volunteer.User;
 
 
-import com.example.demo.Volunteer.Preferences.Preferences;
 import com.example.demo.Volunteer.Volunteer;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
 
@@ -17,6 +13,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Getter
 @Setter
+@EqualsAndHashCode
 @Table(name = "user_")
 public class User {
 
@@ -33,7 +30,7 @@ public class User {
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "volunteer_id", referencedColumnName = "volunteerId")
-    @JsonIgnore // Ignoruj przy serializacji, aby uniknąć rekurencji
+    @JsonIgnore
     private Volunteer volunteer = new Volunteer();
 }
 

@@ -2,107 +2,125 @@ package com.example.demo.Volunteer.User;
 
 import com.example.demo.Auth.AuthDto;
 import com.example.demo.Auth.AuthenticationService;
-import com.example.demo.Auth.ErrorResponse;
 import com.example.demo.Auth.LoginRequest;
-import org.junit.jupiter.api.BeforeEach;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.List;
+import java.util.Collections;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
 
-
+@WithMockUser(username = "testUser", roles = {"USER"})
+@ExtendWith(SpringExtension.class)
+@WebMvcTest(UserController.class)
 class UserControllerTest {
 
-    @Mock
+    @Autowired
+    private MockMvc mockMvc;
+
+    @MockBean
     private UserRepository userRepository;
 
-    @Mock
+    @MockBean
     private UserService userService;
 
-    @Mock
+    @MockBean
     private AuthenticationService authenticationService;
 
-    @InjectMocks
-    private UserController userController;
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    private User user;
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
+        user = new User();
+        user.setUserId(1L);
+        user.setEmail("test@example.com");
+        user.setPassword("securePassword123");
     }
 
     @Test
-    void testGetUsers() {
+    void testGetUsers_Success() throws Exception {
         // Given
-        List<User> users = List.of(new User());
-        when(userRepository.findAll()).thenReturn(users);
+        when(userRepository.findAll()).thenReturn(Collections.singletonList(user));
 
-        // When
-        List<User> result = userController.getUsers();
-
-        // Then
-        assertNotNull(result);
-        assertEquals(1, result.size());
-        verify(userRepository, times(1)).findAll();
+        // When & Then
+        mockMvc.perform(get("/users"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].userId").value(1L))
+                .andExpect(jsonPath("$[0].email").value("test@example.com"));
     }
 
     @Test
-    void testGetUser() {
+    void testGetUserById_Success() throws Exception {
         // Given
-        User user = new User();
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
 
-        // When
-        User result = userController.getUser(1L);
-
-        // Then
-        assertNotNull(result);
-        verify(userRepository, times(1)).findById(1L);
+        // When & Then
+        mockMvc.perform(get("/users/{userId}", 1L))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.userId").value(1L))
+                .andExpect(jsonPath("$.email").value("test@example.com"));
     }
 
     @Test
-    void testLogIn_ReturnsOk_WhenSuccess() {
+    void testGetUserById_NotFound() throws Exception {
         // Given
-        String email = "test@example.com";
-        String password = "password";
-        LoginRequest loginRequest = new LoginRequest(email, password);
-        when(authenticationService.authenticate(email, password)).thenReturn(true);
-        when(userRepository.findUserIdByEmailAndPassword(email, password)).thenReturn(1L);
-        when(authenticationService.createToken(1L)).thenReturn("testToken");
+        when(userRepository.findById(1L)).thenReturn(Optional.empty());
 
-        // When
-        ResponseEntity<?> responseEntity = userController.logIn(loginRequest);
-
-        // Then
-        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        assertInstanceOf(AuthDto.class, responseEntity.getBody());
-        AuthDto authDto = (AuthDto) responseEntity.getBody();
-        assertEquals(1L, authDto.idUser());
-        assertEquals("testToken", authDto.token());
+        // When & Then
+        mockMvc.perform(get("/users/{userId}", 1L))
+                .andExpect(status().isOk())
+                .andExpect(content().string(""));
     }
 
     @Test
-    void testLogIn_ReturnsUnauthorized_WhenAuthFailure() {
+    void testLogIn_Success() throws Exception {
         // Given
-        String email = "test@example.com";
-        String password = "wrongpassword";
-        LoginRequest loginRequest = new LoginRequest(email, password);
-        when(authenticationService.authenticate(email, password)).thenReturn(false);
+        LoginRequest loginRequest = new LoginRequest("test@example.com", "securePassword123");
+        AuthDto authDto = new AuthDto(1L, "sampleToken123");
 
-        // When
-        ResponseEntity<?> responseEntity = userController.logIn(loginRequest);
+        when(authenticationService.authenticate("test@example.com", "securePassword123")).thenReturn(true);
+        when(userRepository.findUserIdByEmailAndPassword("test@example.com", "securePassword123")).thenReturn(1L);
+        when(authenticationService.createToken(1L)).thenReturn("sampleToken123");
 
-        // Then
-        assertEquals(HttpStatus.UNAUTHORIZED, responseEntity.getStatusCode());
-        assertInstanceOf(ErrorResponse.class, responseEntity.getBody());
-        ErrorResponse errorResponse = (ErrorResponse) responseEntity.getBody();
-        assertEquals("Błąd logowania. Sprawdź email i hasło.", errorResponse.error());
+        // When & Then
+        mockMvc.perform(post("/users/login")
+                        .with(csrf())
+                        .contentType(APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(loginRequest)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.idUser").value(1L))
+                .andExpect(jsonPath("$.token").value("sampleToken123"));
+    }
+
+    @Test
+    void testLogIn_Failure() throws Exception {
+        // Given
+        LoginRequest loginRequest = new LoginRequest("test@example.com", "wrongPassword");
+
+        when(authenticationService.authenticate("test@example.com", "wrongPassword")).thenReturn(false);
+
+        // When & Then
+        mockMvc.perform(post("/users/login")
+                        .with(csrf())
+                        .contentType(APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(loginRequest)))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.error").value("Błąd logowania. Sprawdź email i hasło."));
     }
 }

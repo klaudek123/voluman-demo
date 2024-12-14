@@ -5,9 +5,9 @@ import com.example.demo.Volunteer.Preferences.Preferences;
 import com.example.demo.Volunteer.Preferences.PreferencesService;
 import com.example.demo.Schedule.Decision;
 import com.example.demo.Action.Action;
-import com.example.demo.Action.ActionRepository;
 import com.example.demo.Action.ActionService;
-import com.example.demo.Volunteer.VolunteerDto.VolunteerRole;
+import com.example.demo.Volunteer.Role.VolunteerRole;
+import com.example.demo.Volunteer.Role.RoleService;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -17,14 +17,14 @@ public class VolunteerService {
 
     private final VolunteerRepository volunteerRepository;
     private final ActionService actionService;
-    private final ActionRepository actionRepository;
     private final PreferencesService preferencesService;
+    private final RoleService roleService;
 
-    public VolunteerService(VolunteerRepository volunteerRepository, ActionService actionService, ActionRepository actionRepository, PreferencesService preferencesService) {
+    public VolunteerService(VolunteerRepository volunteerRepository, ActionService actionService, PreferencesService preferencesService, RoleService roleService) {
         this.volunteerRepository = volunteerRepository;
         this.actionService = actionService;
-        this.actionRepository = actionRepository;
         this.preferencesService = preferencesService;
+        this.roleService = roleService;
     }
 
     public Volunteer addVolunteerFromCandidate(Optional<Candidate> candidate) {
@@ -33,7 +33,9 @@ public class VolunteerService {
 
             Volunteer volunteer = new Volunteer();
             volunteer.setVolunteerDetails(volunteerDetails);
-            volunteer.setRole(VolunteerRole.VOLUNTEER);
+            volunteer.setRole(VolunteerRole.CANDIDATE);
+            roleService.assignRole(volunteer, VolunteerRole.VOLUNTEER);
+//            volunteer.setRole(VolunteerRole.VOLUNTEER);
             volunteer.setLimitOfWeeklyHours(0L);
             volunteer.setCurrentWeeklyHours(0L);
 
@@ -61,23 +63,23 @@ public class VolunteerService {
         return volunteerDetails;
     }
 
-    public void promoteToLeader(Long idVolunteer) {
-        Optional<Volunteer> volunteer = volunteerRepository.findByVolunteerIdAndRole(idVolunteer, VolunteerRole.VOLUNTEER);
-        if (volunteer.isPresent()) {
-            Volunteer volunteerEntity = volunteer.get();
-            volunteerEntity.setRole(VolunteerRole.LEADER);
-            volunteerRepository.save(volunteerEntity);
-        }
-
-    }
-    public void degradeLeader(Long idVolunteer) {
-        Optional<Volunteer> volunteer = volunteerRepository.findByVolunteerIdAndRole(idVolunteer, VolunteerRole.LEADER);
-        if (volunteer.isPresent()) {
-            Volunteer volunteerEntity = volunteer.get();
-            volunteerEntity.setRole(VolunteerRole.VOLUNTEER);
-            volunteerRepository.save(volunteerEntity);
-        }
-    }
+//    public void promoteToLeader(Long idVolunteer) {
+//        Optional<Volunteer> volunteer = volunteerRepository.findByVolunteerIdAndRole(idVolunteer, VolunteerRole.VOLUNTEER);
+//        if (volunteer.isPresent()) {
+//            Volunteer volunteerEntity = volunteer.get();
+//            volunteerEntity.setRole(VolunteerRole.LEADER);
+//            volunteerRepository.save(volunteerEntity);
+//        }
+//
+//    }
+//    public void degradeLeader(Long idVolunteer) {
+//        Optional<Volunteer> volunteer = volunteerRepository.findByVolunteerIdAndRole(idVolunteer, VolunteerRole.LEADER);
+//        if (volunteer.isPresent()) {
+//            Volunteer volunteerEntity = volunteer.get();
+//            volunteerEntity.setRole(VolunteerRole.VOLUNTEER);
+//            volunteerRepository.save(volunteerEntity);
+//        }
+//    }
 
     public void addPreferences(Long actionId, Long volunteerId, Decision decision) {
         Optional<Volunteer> volunteer = volunteerRepository.findById(volunteerId);
@@ -115,10 +117,19 @@ public class VolunteerService {
 
 
     public Volunteer addVolunteer(Volunteer volunteer) {
+        roleService.assignRole(volunteer, VolunteerRole.VOLUNTEER);
         return volunteerRepository.save(volunteer);
     }
 
     public boolean isLeaderExist(Long leaderId) {
         return volunteerRepository.existsById(leaderId);
+    }
+
+    public Volunteer findVolunteerById(Long volunteerId) {
+        return volunteerRepository.findById(volunteerId).get();
+    }
+
+    public boolean existsVolunteerByEmail(String email) {
+        return volunteerRepository.existsByVolunteerDetailsEmail(email);
     }
 }

@@ -3,9 +3,9 @@ package com.example.demo.Volunteer;
 
 import com.example.demo.Log.EventType;
 import com.example.demo.Log.LogService;
-import com.example.demo.Log.LogUserDto;
+import com.example.demo.Volunteer.Role.RoleService;
+import com.example.demo.Volunteer.Role.VolunteerRole;
 import com.example.demo.Volunteer.VolunteerDto.AdminRequest;
-import com.example.demo.Volunteer.VolunteerDto.VolunteerRole;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,11 +19,13 @@ public class VolunteerController {
     private final VolunteerRepository volunteerRepository;
     private final VolunteerService volunteerService;
     private final LogService logService;
+    private final RoleService roleService;
 
-    public VolunteerController(VolunteerRepository volunteerRepository, VolunteerService volunteerService, LogService logService) {
+    public VolunteerController(VolunteerRepository volunteerRepository, VolunteerService volunteerService, LogService logService, RoleService roleService) {
         this.volunteerRepository = volunteerRepository;
         this.volunteerService = volunteerService;
         this.logService = logService;
+        this.roleService = roleService;
     }
 
     @GetMapping("")
@@ -65,43 +67,22 @@ public class VolunteerController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-
-    @PutMapping("/{idVolunteer}/promote")
-    public ResponseEntity<Void> promoteToLeader(@PathVariable Long idVolunteer, @RequestBody AdminRequest request) {
+    @PutMapping("/{idVolunteer}/roles")
+    public ResponseEntity<Void> changeRole(@PathVariable Long idVolunteer, @RequestBody AdminRequest request, @RequestParam String role) {
         if (!volunteerRepository.existsByVolunteerIdAndRole(request.adminId(), VolunteerRole.ADMIN)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
-        if(volunteerRepository.existsByVolunteerIdAndRole(idVolunteer, VolunteerRole.LEADER)){
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
-
+        if(!volunteerRepository.existsByVolunteerId(idVolunteer)){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
         Optional<Volunteer> volunteer = volunteerRepository.findById(idVolunteer);
 
-
         if (volunteer.isPresent()) {
-            volunteerService.promoteToLeader(idVolunteer);
+            Volunteer vol = volunteer.get();
+            roleService.assignRole(vol, VolunteerRole.valueOf(role));
 
-            logService.logVolunteer(volunteer.get(), EventType.UPDATE, "Promoted by admin with id: " + request.adminId());
+            logService.logVolunteer(vol, EventType.UPDATE, "Promoted by admin with id: " + request.adminId());
 
-            return ResponseEntity.ok().build();
-        }
-        return ResponseEntity.notFound().build();
-    }
-
-    @PutMapping("/{idVolunteer}/degrade")
-    public ResponseEntity<Void> degradeLeader(@PathVariable Long idVolunteer, @RequestBody AdminRequest request) {
-        if (!volunteerRepository.existsByVolunteerIdAndRole(request.adminId(), VolunteerRole.ADMIN)) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        }
-        if(volunteerRepository.existsByVolunteerIdAndRole(idVolunteer, VolunteerRole.VOLUNTEER)){
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
-
-        }
-
-        Optional<Volunteer> volunteer = volunteerRepository.findById(idVolunteer);
-        if (volunteer.isPresent()) {
-            volunteerService.degradeLeader(idVolunteer);
-            logService.logVolunteer(volunteer.get(),EventType.UPDATE,"Degraded by admin with id: " + request.adminId());
             return ResponseEntity.ok().build();
         }
         return ResponseEntity.notFound().build();
@@ -116,13 +97,11 @@ public class VolunteerController {
         if (volunteer.isPresent()) {
             volunteerRepository.deleteById(idVolunteer);
 
-            logService.logVolunteer(volunteer.get(),EventType.DELETE,"Volunteer deleted by admin with id: " + request.adminId());
+            logService.logVolunteer(volunteer.get(), EventType.DELETE, "Volunteer deleted by admin with id: " + request.adminId());
 
             return ResponseEntity.ok().build();
         }
         return ResponseEntity.notFound().build();
     }
-
-
 
 }

@@ -22,7 +22,7 @@ public class Candidate {
     @Column(name = "last_name", nullable = false, length = 50)
     private String lastname;
 
-    @Column(name = "email", nullable = false, length = 50)
+    @Column(name = "email", unique = true,nullable = false, length = 50)
     private String email;
 
     @Column(name = "phone", nullable = false, length = 19)

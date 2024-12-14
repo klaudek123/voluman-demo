@@ -31,7 +31,7 @@ public class Demand {
 
     @ManyToOne
     @JoinColumn(name = "action_id")
-    @JsonBackReference // Odwrotny odnośnik, ignorowany przy serializacji
+    @JsonBackReference
     private Action action;
 
 

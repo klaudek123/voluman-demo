@@ -1,0 +1,579 @@
+INSERT INTO VOLUNTEER 
+    (VOLUNTEER_ID, CURRENT_WEEKLY_HOURS, LIMIT_OF_WEEKLY_HOURS, ROLE, PREFERENCES_ID, VOLUNTEER_DETAILS_ID) 
+VALUES 
+    (1, 0, 40.0, 'ADMIN', NULL, NULL);
+
+
+ZW-1
+
+REQ:
+POST http://localhost:8080/candidates
+
+{
+    "firstname": "Jan",
+    "lastname": "W",
+    "email": "jan.w@example.com",
+    "phone": "123456789",
+    "dateOfBirth": "1990-01-01",
+    "street": "Example Street",
+    "city": "Example City",
+    "houseNumber": "123",
+    "apartmentNumber": "2",
+    "postalNumber": "12345",
+    "sex": "M"
+}
+
+RESPONSE:
+201 Created
+
+{
+    "candidateId": 1,
+    "firstname": "Jan",
+    "lastname": "W",
+    "email": "jan.w@example.com",
+    "phone": "123456789",
+    "dateOfBirth": "1990-01-01",
+    "street": "Example Street",
+    "city": "Example City",
+    "houseNumber": "123",
+    "apartmentNumber": "2",
+    "postalNumber": "12345",
+    "sex": "M"
+}
+
+
+ZW-2
+
+1. kandydaci
+REQ:
+GET http://localhost:8080/candidates?recruiterId=2
+
+RESPONSE:
+200 OK
+[
+    {
+        "candidateId": 1,
+        "firstname": "Jan",
+        "lastname": "W",
+        "email": "jan.w@example.com",
+        "phone": "123456789",
+        "dateOfBirth": "1990-01-01",
+        "street": "Example Street",
+        "city": "Example City",
+        "houseNumber": "123",
+        "apartmentNumber": "2",
+        "postalNumber": "12345",
+        "sex": "M"
+    }
+]
+
+2. kandydat
+
+REQ:
+GET http://localhost:8080/candidates/1?recruiterId=2
+
+RESPONSE:
+200 OK
+
+{
+    "candidateId": 1,
+    "firstname": "Jan",
+    "lastname": "W",
+    "email": "jan.w@example.com",
+    "phone": "123456789",
+    "dateOfBirth": "1990-01-01",
+    "street": "Example Street",
+    "city": "Example City",
+    "houseNumber": "123",
+    "apartmentNumber": "2",
+    "postalNumber": "12345",
+    "sex": "M"
+}
+
+3.1. Akceptacja
+
+REQ:
+POST http://localhost:8080/candidates/1/accept?recruiterId=2
+
+RESPONSE:
+200 OK
+
+{
+    "candidateId": 1,
+    "firstname": "Jan",
+    "lastname": "W",
+    "email": "jan.w@example.com",
+    "phone": "123456789",
+    "dateOfBirth": "1990-01-01",
+    "street": "Example Street",
+    "city": "Example City",
+    "houseNumber": "123",
+    "apartmentNumber": "2",
+    "postalNumber": "12345",
+    "sex": "M"
+}
+
+
+3.2 Odrzucony
+REQ:
+DELETE http://localhost:8080/candidates/2/refuse?recruiterId=2
+
+RESPONSE:
+200 OK
+
+{
+    "candidateId": 2,
+    "firstname": "Jan2",
+    "lastname": "W",
+    "email": "jan.w@example.com",
+    "phone": "123456789",
+    "dateOfBirth": "1990-01-01",
+    "street": "Example Street",
+    "city": "Example City",
+    "houseNumber": "123",
+    "apartmentNumber": "2",
+    "postalNumber": "12345",
+    "sex": "M"
+}
+
+
+ZW-3 awans na lider
+
+1. getVolunteers
+REQ:
+GET http://localhost:8080/volunteers
+
+RESPONSE:
+200 OK
+
+
+
+[
+    {
+        "volunteerId": 1,
+        "role": "ADMIN",
+        "limitOfWeeklyHours": 40.0,
+        "currentWeeklyHours": 0.0,
+        "volunteerDetails": null,
+        "preferences": null,
+        "availabilities": [],
+        "duties": []
+    },
+    {
+        "volunteerId": 2,
+        "role": "RECRUITER",
+        "limitOfWeeklyHours": 40.0,
+        "currentWeeklyHours": 0.0,
+        "volunteerDetails": null,
+        "preferences": null,
+        "availabilities": [],
+        "duties": []
+    },
+    {
+        "volunteerId": 3,
+        "role": "LEADER",
+        "limitOfWeeklyHours": 40.0,
+        "currentWeeklyHours": 0.0,
+        "volunteerDetails": null,
+        "preferences": null,
+        "availabilities": [],
+        "duties": []
+    },
+    {
+        "volunteerId": 4,
+        "role": "VOLUNTEER",
+        "limitOfWeeklyHours": 0.0,
+        "currentWeeklyHours": 0.0,
+        "volunteerDetails": {
+            "volunteerId": 2,
+            "firstname": "Jan",
+            "lastname": "W",
+            "email": "jan.w@example.com",
+            "phone": "123456789",
+            "dateOfBirth": [
+                1990,
+                1,
+                1
+            ],
+            "street": "Example Street",
+            "city": "Example City",
+            "houseNumber": "123",
+            "apartmentNumber": "2",
+            "postalNumber": "12345",
+            "sex": "M"
+        },
+        "preferences": {
+            "preferenceId": 2,
+            "n": [],
+            "r": [],
+            "t": []
+        },
+        "availabilities": [],
+        "duties": []
+    }
+]
+
+2. getVolunteer
+REQ:
+GET http://localhost:8080/volunteers/4
+
+RESPONSE:
+200 OK
+
+{
+    "volunteerId": 4,
+    "role": "VOLUNTEER",
+    "limitOfWeeklyHours": 0.0,
+    "currentWeeklyHours": 0.0,
+    "volunteerDetails": {
+        "volunteerId": 2,
+        "firstname": "Jan",
+        "lastname": "W",
+        "email": "jan.w@example.com",
+        "phone": "123456789",
+        "dateOfBirth": [
+            1990,
+            1,
+            1
+        ],
+        "street": "Example Street",
+        "city": "Example City",
+        "houseNumber": "123",
+        "apartmentNumber": "2",
+        "postalNumber": "12345",
+        "sex": "M"
+    },
+    "preferences": {
+        "preferenceId": 2,
+        "n": [],
+        "r": [],
+        "t": []
+    },
+    "availabilities": [],
+    "duties": []
+}
+
+3. promoteToLeader
+REQ:
+
+http://localhost:8080/volunteers/4/roles?role=LEADER
+
+{
+    "adminId": 1
+}
+
+RESPONSE:
+200 OK
+
+
+ZW-4 odwołanie lidera
+
+PUT http://localhost:8080/volunteers/4/roles?role=VOLUNTEER
+
+{
+    "adminId":1
+}
+
+
+RESPONSE:
+200 OK
+
+
+ZW-5 Usunięcie wolontariusza
+
+1. getVolunteers
+
+2. getVolunteer
+
+3. deleteVolunteer
+REQ:
+DELETE http://localhost:8080/volunteers/5
+
+{
+    "adminId": 1
+}
+
+RESPONSE:
+200 OK
+
+
+
+ZA-1 nowa akcja 
+
+1. getActions
+REQ:
+GET http://localhost:8080/actions
+
+RESPONSE:
+200 OK
+
+[]
+
+2. addAction
+REQ:
+POST http://localhost:8080/actions
+
+{
+    "adminId": 1,
+    "heading": "tytul_akcji",
+    "description": "opis_akcji",
+    "status": "OPEN",
+    "startDay": "2024-12-16",
+    "endDay": "2024-12-20",
+    "leaderId": 3
+}
+
+RESPONSE:
+201 Created
+
+{
+    "actionId": 1,
+    "heading": "tytul_akcji",
+    "description": "opis_akcji",
+    "status": "OPEN",
+    "startDay": [
+        2024,
+        7,
+        15
+    ],
+    "endDay": [
+        2024,
+        7,
+        21
+    ],
+    "leader": {
+        "leaderId": 3,
+        "name": "John",
+        "lastname": "Doe",
+        "email": "john.doe@example.com",
+        "phone": "123456789"
+    },
+    "demands": []
+}
+
+
+ZA-2 zamykanie akcji
+
+3. closeAction
+REQ:
+PUT http://localhost:8080/actions/2/close
+
+{
+    "adminId": 1
+}
+
+RESPONSE:
+200 OK
+
+
+ZH-1 wybieranie preferencji do akcji
+
+3. choosePref
+REQ:
+POST http://localhost:8080/actions/1/preferences
+
+{
+    "volunteerId": 4,
+    "decision": "T"
+}
+
+RESPONSE:
+200 OK
+
+ZH-2 deklarowanie dostępności
+3. chooseAvail
+REQ:
+POST http://localhost:8080/volunteers/4/availabilities?year=2024&week=51
+
+{
+  "limitOfHours": 20,
+  "days": [
+    
+    {
+      "date": "2024-12-16",
+      "slots": [
+        {
+          "startTime": "09:00:00",
+          "endTime": "09:30:00"
+        },
+        {
+          "startTime": "10:00:00",
+          "endTime": "10:30:00"
+        }
+      ]
+    },
+    {
+      "date": "2024-12-17",
+      "slots": [
+        {
+          "startTime": "09:00:00",
+          "endTime": "09:30:00"
+        },
+        {
+          "startTime": "10:00:00",
+          "endTime": "10:30:00"
+        }
+      ]
+    },
+    {
+      "date": "2024-12-19",
+      "slots": [
+        {
+          "startTime": "09:00:00",
+          "endTime": "09:30:00"
+        },
+        {
+          "startTime": "10:00:00",
+          "endTime": "10:30:00"
+        }
+      ]
+    }
+  ]
+  
+}
+
+RESPONSE:
+200 OK
+
+
+
+
+
+ZH-3 deklarowanie zapotrzebowania
+POST http://localhost:8080/actions/1/demands?year=2024&week=51
+
+{
+    "leaderId": 3,
+    "days": [
+        {
+            "date": "2024-12-16",
+            "slots": [
+                {
+                    "startTime": "09:00:00",
+                    "endTime": "09:30:00",
+                    "needMin": 1,
+                    "needMax": 2
+                },
+                {
+                    "startTime": "09:30:00",
+                    "endTime": "10:00:00",
+                    "needMin": 1,
+                    "needMax": 2
+                }
+        
+            ]
+        }
+        
+    ]
+}
+
+RESPONSE:
+200 OK
+
+
+
+ZH-4 GENEROWANIE HARMONOGRAMU
+POST http://localhost:8080/schedules/generate?year=2024&week=51
+
+{
+    "adminId": 1,
+    "date": "2024-12-16"
+}
+
+RESPONSE:
+200 OK
+Schedule generated successfully.
+
+ZH-5? PRZGLAD HARMONORGAMU by volunteer
+
+GET http://localhost:8080/volunteers/4/schedules?year=2024&week=51
+
+
+RESPONSE:
+200 OK
+{
+    "volunteerId": 4,
+    "name": "Jan",
+    "lastname": "W",
+    "dutyIntervals": [
+        {
+            "intervalId": 1,
+            "date": [
+                2024,
+                12,
+                16
+            ],
+            "startTime": [
+                9,
+                0
+            ],
+            "endTime": [
+                9,
+                30
+            ],
+            "action": {
+                "actionId": 1,
+                "heading": "tytul_akcji"
+            }
+        }
+    ]
+}
+
+
+
+ZH-6? przegląd harmonogramu by action
+
+GET http://localhost:8080/actions/1/schedules?leaderId=3
+
+
+RESPONSE:
+200 OK
+
+{
+    "actionId": 1,
+    "heading": "tytul_akcji",
+    "description": "opis_akcji",
+    "demands": [
+        {
+            "demandId": 1,
+            "date": [
+                2024,
+                12,
+                16
+            ],
+            "demandIntervals": [
+                {
+                    "intervalId": 1,
+                    "startTime": [
+                        9,
+                        0
+                    ],
+                    "endTime": [
+                        9,
+                        30
+                    ],
+                    "assignedVolunteers": [
+                        {
+                            "volunteerId": 4,
+                            "firstname": "Jan",
+                            "lastname": "W"
+                        }
+                    ]
+                },
+                {
+                    "intervalId": 2,
+                    "startTime": [
+                        9,
+                        30
+                    ],
+                    "endTime": [
+                        10,
+                        0
+                    ],
+                    "assignedVolunteers": []
+                }
+            ]
+        }
+    ]
+}
+

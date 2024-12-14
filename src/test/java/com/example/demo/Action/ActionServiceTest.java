@@ -4,7 +4,7 @@ import com.example.demo.Volunteer.Volunteer;
 import com.example.demo.Volunteer.VolunteerDto.LeaderDto;
 import com.example.demo.Volunteer.VolunteerDetails;
 import com.example.demo.Volunteer.VolunteerRepository;
-import com.example.demo.Volunteer.VolunteerDto.VolunteerRole;
+import com.example.demo.Volunteer.Role.VolunteerRole;
 import com.example.demo.Action.ActionDto.AddActionRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

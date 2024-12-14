@@ -1,14 +1,17 @@
 package com.example.demo.Volunteer;
 
-import com.example.demo.Volunteer.Preferences.Preferences;
+import com.example.demo.Action.Action;
 import com.example.demo.Volunteer.Availability.Availability;
 import com.example.demo.Volunteer.Duty.Duty;
-import com.example.demo.Action.Action;
-import com.example.demo.Volunteer.VolunteerDto.VolunteerRole;
+import com.example.demo.Volunteer.Preferences.Preferences;
+import com.example.demo.Volunteer.Role.VolunteerRole;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -46,23 +49,21 @@ public class Volunteer {
     private Preferences preferences = new Preferences();
 
     @OneToMany(mappedBy = "volunteer", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference // Zarządzany odnośnik dla serializacji
+    @JsonManagedReference
     private List<Availability> availabilities = new ArrayList<>();
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinTable(
             name = "volunteer_action",
             joinColumns = @JoinColumn(name = "volunteer_id"),
             inverseJoinColumns = @JoinColumn(name = "action_id")
     )
-    @JsonIgnore // Ignoruj przy serializacji, aby uniknąć rekurencji
-    private Set<Action> actions = new HashSet<>(); //relacja
+    @JsonIgnore
+    private Set<Action> actions = new HashSet<>();
 
     @OneToMany(mappedBy = "volunteer", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference // Ignoruj przy serializacji, aby uniknąć rekurencji
+    @JsonManagedReference
     private Set<Duty> duties = new HashSet<>();
-
-
 
 
     public double calculateCurrentWeeklyHours(LocalDate startOfWeek, LocalDate endOfWeek) {
@@ -78,15 +79,15 @@ public class Volunteer {
             this.preferences = new Preferences();
         }
 
-        if(this.actions == null) {
+        if (this.actions == null) {
             this.actions = new HashSet<>();
         }
 
-        if(this.duties == null) {
+        if (this.duties == null) {
             this.duties = new HashSet<>();
         }
 
-        if(this.availabilities == null) {
+        if (this.availabilities == null) {
             this.availabilities = new ArrayList<>();
         }
     }
