@@ -1,8 +1,8 @@
-package com.example.demo.Volunteer.VolunteerDto;
-
-public enum VolunteerRole {
-    VOLUNTEER,
-    LEADER,
-    RECRUITER,
-    ADMIN
-}
+//package com.example.demo.Volunteer.VolunteerDto;
+//
+//public enum VolunteerRole {
+//    VOLUNTEER,
+//    LEADER,
+//    RECRUITER,
+//    ADMIN
+//}

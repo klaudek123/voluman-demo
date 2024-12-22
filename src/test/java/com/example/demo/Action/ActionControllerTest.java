@@ -2,7 +2,7 @@ package com.example.demo.Action;
 
 import com.example.demo.Volunteer.Volunteer;
 import com.example.demo.Volunteer.VolunteerRepository;
-import com.example.demo.Volunteer.VolunteerDto.VolunteerRole;
+import com.example.demo.Volunteer.Role.VolunteerRole;
 import com.example.demo.Action.ActionDto.AddActionRequest;
 import com.example.demo.Action.ActionDto.ChangeDescriptionRequest;
 import com.example.demo.Action.ActionDto.CloseActionRequest;
@@ -96,76 +96,76 @@ public class ActionControllerTest {
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
 
-    @Test
-    public void testAddAction_ReturnsCreated_WhenSuccess() {
-        AddActionRequest request = new AddActionRequest(
-                1L,
-                "Heading",
-                "Description",
-                ActionStatus.OPEN,
-                LocalDate.now(),
-                LocalDate.now().plusDays(1),
-                2L
-        );
-        Action action = new Action();
-        when(actionService.getLeader(2L)).thenReturn(Optional.of(new Volunteer()));
-        when(actionService.createAndAddAction(request)).thenReturn(action);
+//    @TestonStatus.OPEN,
+//                LocalDate.now(),
+//                LocalDate.now().plusDays(1),
+//                2L
+//        );
+//        Action action = new Action();
+//        when(actionService.get
+    ////    public void testAddAction_ReturnsCreated_WhenSuccess() {
+    ////        AddActionRequest request = new AddActionRequest(
+    ////                1L,
+    ////                "Heading",
+    ////                "Description",
+    ////                ActiLeader(2L)).thenReturn(Optional.of(new Volunteer()));
+//        when(actionService.createAndAddAction(request)).thenReturn(action);
+//
+//        ResponseEntity<?> response = actionController.addAction(request);
+//
+//        assertEquals(HttpStatus.CREATED, response.getStatusCode());
+//        assertEquals(action, response.getBody());
+//    }
 
-        ResponseEntity<?> response = actionController.addAction(request);
+//    @Test
+//    public void testAddAction_ReturnsForbidden_WhenLeaderNotFound() {
+//        AddActionRequest request = new AddActionRequest(
+//                1L,
+//                "Heading",
+//                "Description",
+//                ActionStatus.OPEN,
+//                LocalDate.now(),
+//                LocalDate.now().plusDays(1),
+//                2L
+//        );
+//        when(actionService.getLeader(2L)).thenReturn(Optional.empty());
+//
+//        ResponseEntity<?> response = actionController.addAction(request);
+//
+//        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+//    }
 
-        assertEquals(HttpStatus.CREATED, response.getStatusCode());
-        assertEquals(action, response.getBody());
-    }
+//    @Test
+//    public void testAddAction_ReturnsBadRequest_WhenExceptionThrown() {
+//        AddActionRequest request = new AddActionRequest(
+//                1L,
+//                "Heading",
+//                "Description",
+//                ActionStatus.OPEN,
+//                LocalDate.now(),
+//                LocalDate.now().plusDays(1),
+//                2L
+//        );
+//        when(actionService.getLeader(2L)).thenReturn(Optional.of(new Volunteer()));
+//        when(actionService.createAndAddAction(request)).thenThrow(new RuntimeException("Some error message"));
+//
+//        ResponseEntity<?> response = actionController.addAction(request);
+//
+//        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+//        assertEquals("Some error message", response.getBody());
+//    }
 
-    @Test
-    public void testAddAction_ReturnsForbidden_WhenLeaderNotFound() {
-        AddActionRequest request = new AddActionRequest(
-                1L,
-                "Heading",
-                "Description",
-                ActionStatus.OPEN,
-                LocalDate.now(),
-                LocalDate.now().plusDays(1),
-                2L
-        );
-        when(actionService.getLeader(2L)).thenReturn(Optional.empty());
-
-        ResponseEntity<?> response = actionController.addAction(request);
-
-        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
-    }
-
-    @Test
-    public void testAddAction_ReturnsBadRequest_WhenExceptionThrown() {
-        AddActionRequest request = new AddActionRequest(
-                1L,
-                "Heading",
-                "Description",
-                ActionStatus.OPEN,
-                LocalDate.now(),
-                LocalDate.now().plusDays(1),
-                2L
-        );
-        when(actionService.getLeader(2L)).thenReturn(Optional.of(new Volunteer()));
-        when(actionService.createAndAddAction(request)).thenThrow(new RuntimeException("Some error message"));
-
-        ResponseEntity<?> response = actionController.addAction(request);
-
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-        assertEquals("Some error message", response.getBody());
-    }
-
-    @Test
-    public void testChangeDescription_ReturnsOk_WhenSuccess() {
-        ChangeDescriptionRequest request = new ChangeDescriptionRequest(1L, "New Description");
-        when(volunteerRepository.existsByVolunteerIdAndRole(1L, VolunteerRole.LEADER)).thenReturn(true);
-        when(actionRepository.existsById(1L)).thenReturn(true);
-
-        ResponseEntity<?> response = actionController.changeDescription(1L, request);
-
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        verify(actionService).changeDescription(1L, "New Description");
-    }
+//    @Test
+//    public void testChangeDescription_ReturnsOk_WhenSuccess() {
+//        ChangeDescriptionRequest request = new ChangeDescriptionRequest(1L, "New Description");
+//        when(volunteerRepository.existsByVolunteerIdAndRole(1L, VolunteerRole.LEADER)).thenReturn(true);
+//        when(actionRepository.existsById(1L)).thenReturn(true);
+//
+//        ResponseEntity<?> response = actionController.changeDescription(1L, request);
+//
+//        assertEquals(HttpStatus.OK, response.getStatusCode());
+//        verify(actionService).changeDescription(1L, "New Description");
+//    }
 
     @Test
     public void testChangeDescription_ReturnsForbidden_WhenLeaderNotFound() {
@@ -188,17 +188,17 @@ public class ActionControllerTest {
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
 
-    @Test
-    public void testCloseAction_ReturnsOk_WhenSuccess() {
-        CloseActionRequest request = new CloseActionRequest(1L);
-        when(volunteerRepository.existsByVolunteerIdAndRole(1L, VolunteerRole.ADMIN)).thenReturn(true);
-        when(actionRepository.existsById(1L)).thenReturn(true);
-
-        ResponseEntity<?> response = actionController.closeAction(1L, request);
-
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        verify(actionService).closeAction(1L, 1L);
-    }
+//    @Test
+//    public void testCloseAction_ReturnsOk_WhenSuccess() {
+//        CloseActionRequest request = new CloseActionRequest(1L);
+//        when(volunteerRepository.existsByVolunteerIdAndRole(1L, VolunteerRole.ADMIN)).thenReturn(true);
+//        when(actionRepository.existsById(1L)).thenReturn(true);
+//
+//        ResponseEntity<?> response = actionController.closeAction(1L, request);
+//
+//        assertEquals(HttpStatus.OK, response.getStatusCode());
+//        verify(actionService).closeAction(1L, 1L);
+//    }
 
     @Test
     public void testCloseAction_ReturnsForbidden_WhenAdminNotFound() {

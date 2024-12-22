@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>C:/Users/klaud/Desktop/backend-projects/voluman-demo/src/main/java/com/example/demo/Volunteer</OriginalElement>
+  <nodes>
+    <node x="-2862.0" y="1834.947144102985">com.example.demo.Volunteer.Availability.Availability</node>
+    <node x="-3183.0" y="1459.2077661169412">com.example.demo.Action.Demand.Demand</node>
+    <node x="-2197.5" y="1722.8008171523834">com.example.demo.Schedule.ScheduleController</node>
+    <node x="-2529.5208862629247" y="1761.940652884784">com.example.demo.Volunteer.Preferences.Preferences</node>
+    <node x="-2829.0" y="2008.7993442101351">com.example.demo.Volunteer.VolunteerDetails</node>
+    <node x="-2173.6884744629156" y="1333.397531795402">com.example.demo.Action.ActionController</node>
+    <node x="-2809.5920331562434" y="1385.8031738223683">com.example.demo.Action.Demand.DemandInterval.DemandInterval</node>
+    <node x="-3183.0" y="1621.4861109445274">com.example.demo.Volunteer.Duty.DutyInterval.DutyInterval</node>
+    <node x="-2476.5" y="1436.0403725183803">com.example.demo.Action.Action</node>
+    <node x="-2032.6923658170915" y="2230.129377750165">com.example.demo.Volunteer.User.UserController</node>
+    <node x="-2866.5" y="1632.0691753547223">com.example.demo.Volunteer.Availability.AvailabilityInterval.AvailabilityInterval</node>
+    <node x="-3222.573366660727" y="1820.4742588568492">com.example.demo.Volunteer.Duty.Duty</node>
+    <node x="-2033.1923658170915" y="2052.4650974512742">com.example.demo.Volunteer.User.User</node>
+    <node x="-2549.75" y="1911.5984197901053">com.example.demo.Volunteer.Preferences.PreferencesController</node>
+    <node x="-3178.0" y="2024.1981335757723">com.example.demo.Volunteer.Candidate.Candidate</node>
+    <node x="-2495.678590704648" y="2052.4650974512742">com.example.demo.Volunteer.Volunteer</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="com.example.demo.Volunteer.Availability.AvailabilityInterval.AvailabilityInterval" target="com.example.demo.Volunteer.Availability.Availability" relationship="TO_ONE">
+      <point x="121.5" y="-1.1094452725046722E-4" />
+      <point x="-2598.0" y="1697.986" />
+      <point x="-2598.0" y="1814.0" />
+      <point x="-2716.0" y="1814.0" />
+      <point x="0.0" y="-66.50014410298513" />
+    </edge>
+    <edge source="com.example.demo.Action.Demand.Demand" target="com.example.demo.Action.Action" relationship="TO_ONE">
+      <point x="115.5" y="65.00023388305885" />
+      <point x="-2892.5" y="1611.0" />
+      <point x="-2516.684" y="1611.0" />
+      <point x="-2516.684" y="1639.569" />
+      <point x="-139.5" y="66.02862748161965" />
+    </edge>
+    <edge source="com.example.demo.Volunteer.User.User" target="com.example.demo.Volunteer.Volunteer" relationship="TO_ONE">
+      <point x="161.5003658170915" y="-9.745127408677945E-5" />
+      <point x="-1632.676" y="2128.965" />
+      <point x="-1632.676" y="1686.0" />
+      <point x="-2329.684" y="1686.0" />
+      <point x="-2329.684" y="1713.0" />
+      <point x="-2577.5" y="1713.0" />
+      <point x="-2577.5" y="1817.447" />
+      <point x="-2892.0" y="1817.447" />
+      <point x="-2892.0" y="2428.129" />
+      <point x="-2286.179" y="2428.129" />
+      <point x="-4.0929535225586733E-4" y="124.99956071964016" />
+    </edge>
+    <edge source="com.example.demo.Action.Demand.DemandInterval.DemandInterval" target="com.example.demo.Action.Demand.Demand" relationship="TO_ONE">
+      <point x="-151.0" y="0.0" />
+      <point x="175.0" y="-36.70229614728646" />
+    </edge>
+    <edge source="com.example.demo.Action.Action" target="com.example.demo.Action.Demand.Demand" relationship="TO_MANY">
+      <point x="0.0" y="-137.5" />
+      <point x="-2337.0" y="1368.3031738223683" />
+      <point x="-3008.0" y="1368.3031738223683" />
+      <point x="0.0" y="-65.0" />
+    </edge>
+    <edge source="com.example.demo.Action.Demand.Demand" target="com.example.demo.Action.Demand.DemandInterval.DemandInterval" relationship="TO_MANY">
+      <point x="175.0" y="-14.999766116941146" />
+      <point x="-151.0" y="21.702530030345315" />
+    </edge>
+    <edge source="com.example.demo.Volunteer.Duty.DutyInterval.DutyInterval" target="com.example.demo.Volunteer.Duty.Duty" relationship="TO_ONE">
+      <point x="0.0" y="76.49988905547275" />
+      <point x="-3051.5" y="1798.0" />
+      <point x="-3070.073" y="1798.0" />
+      <point x="3.666607271952671E-4" y="-64.4073272490532" />
+    </edge>
+    <edge source="com.example.demo.Volunteer.Preferences.Preferences" target="com.example.demo.Action.Action" relationship="TO_MANY">
+      <point x="-96.66311373707549" y="-66.99965288478393" />
+      <point x="-2516.684" y="1639.569" />
+      <point x="-139.5" y="66.02862748161965" />
+    </edge>
+    <edge source="com.example.demo.Volunteer.Duty.Duty" target="com.example.demo.Volunteer.Volunteer" relationship="TO_ONE">
+      <point x="152.5003666607272" y="-3.2724905304348795E-4" />
+      <point x="-2892.0" y="1884.881" />
+      <point x="-2892.0" y="2428.129" />
+      <point x="-2286.179" y="2428.129" />
+      <point x="-4.0929535225586733E-4" y="124.99956071964016" />
+    </edge>
+    <edge source="com.example.demo.Volunteer.Availability.Availability" target="com.example.demo.Volunteer.Availability.AvailabilityInterval.AvailabilityInterval" relationship="TO_MANY">
+      <point x="-29.0" y="-66.5" />
+      <point x="0.0" y="65.91693558980523" />
+    </edge>
+    <edge source="com.example.demo.Volunteer.Volunteer" target="com.example.demo.Volunteer.Duty.Duty" relationship="TO_MANY">
+      <point x="29.999590704647744" y="124.99956071964016" />
+      <point x="-2256.179" y="2458.129" />
+      <point x="-1617.676" y="2458.129" />
+      <point x="-1617.676" y="1306.730035450517" />
+      <point x="-3188.9874446085673" y="1306.730035450517" />
+      <point x="-3188.9874446085673" y="1798.0" />
+      <point x="-3070.073" y="1798.0" />
+      <point x="3.666607271952671E-4" y="-64.4073272490532" />
+    </edge>
+    <edge source="com.example.demo.Volunteer.Availability.Availability" target="com.example.demo.Volunteer.Volunteer" relationship="TO_ONE">
+      <point x="-146.0" y="-1.4410298513212183E-4" />
+      <point x="-2892.0" y="1901.447" />
+      <point x="-2892.0" y="2428.129" />
+      <point x="-2286.179" y="2428.129" />
+      <point x="-4.0929535225586733E-4" y="124.99956071964016" />
+    </edge>
+    <edge source="com.example.demo.Volunteer.Volunteer" target="com.example.demo.Volunteer.Preferences.Preferences" relationship="TO_ONE">
+      <point x="209.5" y="-116.3683418290857" />
+      <point x="-1661.5" y="2061.0967556221885" />
+      <point x="-1661.5" y="1675.5" />
+      <point x="-2319.184" y="1675.5" />
+      <point x="100.83688626292451" y="-67.0" />
+    </edge>
+    <edge source="com.example.demo.Volunteer.User.User" target="com.example.demo.Volunteer.Volunteer" relationship="CREATE">
+      <point x="-161.5" y="26.868341829085693" />
+      <point x="-2054.93547826087" y="2155.83343928036" />
+      <point x="-2054.93547826087" y="2177.4650974512742" />
+      <point x="209.5" y="0.0" />
+    </edge>
+    <edge source="com.example.demo.Volunteer.Volunteer" target="com.example.demo.Volunteer.Availability.Availability" relationship="TO_MANY">
+      <point x="-10.500409295352256" y="124.99956071964016" />
+      <point x="-2296.679" y="2361.902" />
+      <point x="-2902.5" y="2361.902" />
+      <point x="-2902.5" y="1814.0" />
+      <point x="-2716.0" y="1814.0" />
+      <point x="0.0" y="-66.50014410298513" />
+    </edge>
+    <edge source="com.example.demo.Volunteer.Volunteer" target="com.example.demo.Volunteer.Preferences.Preferences" relationship="CREATE">
+      <point x="44.999590704647744" y="125.0" />
+      <point x="-2241.179" y="2473.129" />
+      <point x="-1602.676" y="2473.129" />
+      <point x="-1602.676" y="1319.735050259213" />
+      <point x="-2501.6840663124867" y="1319.735050259213" />
+      <point x="-81.66318004956202" y="-67.0" />
+    </edge>
+    <edge source="com.example.demo.Volunteer.Volunteer" target="com.example.demo.Volunteer.VolunteerDetails" relationship="TO_ONE">
+      <point x="-209.5" y="14.600350146206893" />
+      <point x="-2532.839295352324" y="2192.065447597481" />
+      <point x="-2532.839295352324" y="2170.433789426567" />
+      <point x="129.5" y="0.0" />
+    </edge>
+    <edge source="com.example.demo.Volunteer.Duty.Duty" target="com.example.demo.Volunteer.Duty.DutyInterval.DutyInterval" relationship="TO_MANY">
+      <point x="33.57336666072706" y="-64.40706839220388" />
+      <point x="15.0" y="76.5" />
+    </edge>
+    <edge source="com.example.demo.Action.Action" target="com.example.demo.Volunteer.Volunteer" relationship="TO_MANY">
+      <point x="15.0" y="-137.5" />
+      <point x="-2322.0" y="1291.730035450517" />
+      <point x="-1587.676" y="1291.730035450517" />
+      <point x="-1587.676" y="2498.629" />
+      <point x="-2226.179" y="2498.629" />
+      <point x="59.999590704647744" y="125.0" />
+    </edge>
+    <edge source="com.example.demo.Volunteer.Volunteer" target="com.example.demo.Action.Action" relationship="TO_MANY">
+      <point x="10.499590704647744" y="124.99990254872591" />
+      <point x="-2275.679" y="2483.629" />
+      <point x="-3235.573" y="2483.629" />
+      <point x="-3235.573" y="1611.0" />
+      <point x="-2516.684" y="1611.0" />
+      <point x="-2516.684" y="1639.569" />
+      <point x="-139.5" y="66.02862748161965" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Compact" zoom="0.5211701308699" showDependencies="true" x="-2248.5357874151014" y="1905.318023161005" />
+  <SelectedNodes />
+  <Categories>
+    <Category>Fields</Category>
+    <Category>Methods</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+

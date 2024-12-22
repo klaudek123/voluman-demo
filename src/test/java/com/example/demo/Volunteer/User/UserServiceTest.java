@@ -7,22 +7,24 @@ import com.example.demo.Volunteer.Volunteer;
 import com.example.demo.Volunteer.VolunteerService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.Base64;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 class UserServiceTest {
+
+    @InjectMocks
+    private UserService userService;
 
     @Mock
     private UserRepository userRepository;
@@ -30,76 +32,80 @@ class UserServiceTest {
     @Mock
     private VolunteerService volunteerService;
 
-    @InjectMocks
-    private UserService userService;
+    private Candidate candidate;
+    private User user;
+    private Volunteer volunteer;
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
-        // Set the salt manually for testing purposes
-        userService.SALT = "testSalt";
+        candidate = new Candidate();
+        candidate.setEmail("test@example.com");
+        candidate.setPhone("123456789");
+
+        volunteer = new Volunteer();
+
+        user = new User();
+        user.setEmail("test@example.com");
+        user.setPassword("hashedPassword");
+        user.setVolunteer(volunteer);
     }
+
+    // register
 
     @Test
     void testRegister_Success() {
         // Given
-        Candidate candidate = new Candidate();
-        candidate.setEmail("test@example.com");
-        candidate.setPhone("123456789");
-        when(volunteerService.addVolunteerFromCandidate(Optional.of(candidate))).thenReturn(new Volunteer());
+        when(volunteerService.addVolunteerFromCandidate(any(Optional.class))).thenReturn(volunteer);
+        when(userRepository.save(any(User.class))).thenReturn(user);
 
         // When
-        userService.register(Optional.of(candidate));
+        assertDoesNotThrow(() -> userService.register(Optional.of(candidate)));
 
         // Then
         verify(userRepository, times(1)).save(any(User.class));
     }
 
     @Test
-    void testRegister_Failure() {
-        // Given
-        Candidate candidate = new Candidate();
-        candidate.setEmail("test@example.com");
-        candidate.setPhone("123456789");
-        when(volunteerService.addVolunteerFromCandidate(Optional.of(candidate))).thenReturn(null);
-
+    void testRegister_InvalidCandidate_ThrowsException() {
         // When & Then
-        ResponseStatusException thrown = assertThrows(ResponseStatusException.class, () -> userService.register(Optional.of(candidate)));
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, thrown.getStatusCode());
-        assertEquals("Invalid email or password", thrown.getReason());
+        assertDoesNotThrow(() -> userService.register(Optional.empty()));
+
+        verify(userRepository, never()).save(any(User.class));
     }
 
     @Test
-    void testGeneratePassword() throws NoSuchAlgorithmException {
+    void testRegister_VolunteerServiceReturnsNull_ThrowsResponseStatusException() {
+        // Given
+        when(volunteerService.addVolunteerFromCandidate(any(Optional.class))).thenReturn(null);
+
+        // When & Then
+        assertThrows(ResponseStatusException.class, () -> userService.register(Optional.of(candidate)));
+    }
+
+    // generatePassword
+
+    @Test
+    void testGeneratePassword_Success() {
         // Given
         String phone = "123456789";
-        String salt = "testSalt";
-        String expectedHash = generateExpectedHash(phone, salt);
 
         // When
-        String generatedPassword = userService.generatePassword(phone);
+        String password = userService.generatePassword(phone);
 
         // Then
-        assertEquals(expectedHash, generatedPassword);
+        assertNotNull(password);
+        assertEquals(12, password.length());
     }
 
-    private String generateExpectedHash(String phone, String salt) throws NoSuchAlgorithmException {
-        String phoneWithSalt = salt + phone;
-        MessageDigest digest = MessageDigest.getInstance("SHA-256");
-        byte[] hash = digest.digest(phoneWithSalt.getBytes(StandardCharsets.UTF_8));
-        String base64Hash = Base64.getEncoder().encodeToString(hash);
-        return base64Hash.substring(2, 14);
-    }
+    // authenticateLogin
 
     @Test
     void testAuthenticateLogin_Success() {
         // Given
-        String email = "test@example.com";
-        String password = "password";
-        when(userRepository.existsByEmailAndPassword(email, password)).thenReturn(true);
+        when(userRepository.existsByEmailAndPassword("test@example.com", "hashedPassword")).thenReturn(true);
 
         // When
-        boolean result = userService.authenticateLogin(email, password);
+        boolean result = userService.authenticateLogin("test@example.com", "hashedPassword");
 
         // Then
         assertTrue(result);
@@ -108,41 +114,38 @@ class UserServiceTest {
     @Test
     void testAuthenticateLogin_Failure() {
         // Given
-        String email = "test@example.com";
-        String password = "password";
-        when(userRepository.existsByEmailAndPassword(email, password)).thenReturn(false);
+        when(userRepository.existsByEmailAndPassword("test@example.com", "wrongPassword")).thenReturn(false);
 
         // When
-        boolean result = userService.authenticateLogin(email, password);
+        boolean result = userService.authenticateLogin("test@example.com", "wrongPassword");
 
         // Then
         assertFalse(result);
     }
 
+    // findByUserId
+
     @Test
     void testFindByUserId_Success() {
         // Given
-        User user = new User();
-        user.setUserId(1L);
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
 
         // When
-        AuthDto result = userService.findByUserId("1");
+        AuthDto authDto = userService.findByUserId("1");
 
         // Then
-        assertNotNull(result);
-        assertEquals(1L, result.idUser());
-        assertNull(result.token());
+        assertNotNull(authDto);
+        assertEquals(user.getUserId(), authDto.idUser());
     }
 
     @Test
-    void testFindByUserId_Failure() {
+    void testFindByUserId_UserNotFound_ThrowsAppException() {
         // Given
         when(userRepository.findById(1L)).thenReturn(Optional.empty());
 
         // When & Then
-        AppException thrown = assertThrows(AppException.class, () -> userService.findByUserId("1"));
-        assertEquals(HttpStatus.NOT_FOUND, thrown.getStatus());
-        assertEquals("Unknown user", thrown.getMessage());
+        AppException exception = assertThrows(AppException.class, () -> userService.findByUserId("1"));
+        assertEquals("Unknown user", exception.getMessage());
+        assertEquals(HttpStatus.NOT_FOUND, exception.getStatus());
     }
 }

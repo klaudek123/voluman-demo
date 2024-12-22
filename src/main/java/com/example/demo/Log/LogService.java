@@ -4,6 +4,7 @@ import com.example.demo.Volunteer.Candidate.Candidate;
 import com.example.demo.Volunteer.Volunteer;
 import com.example.demo.Volunteer.VolunteerDetails;
 import com.example.demo.Volunteer.VolunteerRepository;
+import org.hibernate.event.spi.SaveOrUpdateEvent;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -19,7 +20,7 @@ public class LogService {
         this.volunteerRepository = volunteerRepository;
     }
 
-    private Error log(LogUserDto logUserDto, EventType eventType, String eventDesc) {
+    private LogResult log(LogUserDto logUserDto, EventType eventType, String eventDesc) {
         try {
             Log log = new Log();
             log.setFirstName(logUserDto.firstName());
@@ -30,23 +31,23 @@ public class LogService {
             log.setTimestamp(LocalDateTime.now());
 
             logRepository.save(log);
-            return null;
-        }catch (Exception e){
-            return new Error(e.getMessage());
+            return new LogResult(true, null);
+        } catch (Exception e) {
+            return new LogResult(false, e.getMessage());
         }
     }
 
     public void logCandidate(Candidate candidate, EventType eventType, String eventDesc) {
-        try{
+        try {
 
-            String error = log(
+            LogResult result = log(
                     new LogUserDto(candidate.getFirstname(), candidate.getLastname(), candidate.getEmail()),
                     eventType,
                     eventDesc
-            ).getMessage();
+            );
 
-            if (error != null) {
-                throw new RuntimeException(error);
+            if (!result.isSuccess()) {
+                throw new RuntimeException(result.getErrorMessage());
             }
         } catch (RuntimeException e) {
             System.out.println(e.getMessage());
@@ -54,23 +55,22 @@ public class LogService {
     }
 
     public void logVolunteer(Volunteer volunteer, EventType eventType, String eventDesc) {
-        try{
-            VolunteerDetails volunteerDetails = volunteer.getVolunteerDetails();
-            String error = log(
+        try {
+            LogResult result = log(
                     new LogUserDto(
-                            volunteerDetails.getFirstname(),
-                            volunteerDetails.getLastname(),
-                            volunteerDetails.getEmail()
+                            volunteer.getVolunteerDetails().getFirstname(),
+                            volunteer.getVolunteerDetails().getLastname(),
+                            volunteer.getVolunteerDetails().getEmail()
                     ),
                     eventType,
                     eventDesc
-            ).getMessage();
+            );
 
-            if (error != null) {
-                throw new RuntimeException(error);
+            if (!result.isSuccess()) {
+                throw new RuntimeException(result.getErrorMessage());
             }
         } catch (RuntimeException e) {
-            System.out.println(e.getMessage());
+            System.out.println("Error during logging: " + e.getMessage());
         }
     }
 
@@ -81,7 +81,7 @@ public class LogService {
             VolunteerDetails volunteerDetails = volunteer.get().getVolunteerDetails();
 
 
-            String error = log(
+            LogResult result = log(
                     new LogUserDto(
                             volunteerDetails.getFirstname(),
                             volunteerDetails.getLastname(),
@@ -89,10 +89,10 @@ public class LogService {
                     ),
                     eventType,
                     eventDesc
-            ).getMessage();
+            );
 
-            if (error != null) {
-                throw new RuntimeException(error);
+            if (!result.isSuccess()) {
+                throw new RuntimeException(result.getErrorMessage());
             }
         } catch (RuntimeException e) {
             System.out.println(e.getMessage());
@@ -104,7 +104,7 @@ public class LogService {
             Optional<Volunteer> volunteer = volunteerRepository.findById(volunteerId);
             VolunteerDetails volunteerDetails = volunteer.get().getVolunteerDetails();
 
-            String error = log(
+            LogResult result = log(
                     new LogUserDto(
                             volunteerDetails.getFirstname(),
                             volunteerDetails.getLastname(),
@@ -112,10 +112,10 @@ public class LogService {
                     ),
                     eventType,
                     eventDesc
-            ).getMessage();
+            );
 
-            if (error != null) {
-                throw new RuntimeException(error);
+            if (!result.isSuccess()) {
+                throw new RuntimeException(result.getErrorMessage());
             }
         } catch (RuntimeException e) {
             System.out.println(e.getMessage());

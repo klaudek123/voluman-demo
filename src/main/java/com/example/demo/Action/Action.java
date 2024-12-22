@@ -44,15 +44,15 @@ public class Action {
     private LeaderDto leader;
 
     @OneToMany(mappedBy = "action", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference // Zarządzany odnośnik dla serializacji
+    @JsonManagedReference
     private List<Demand> demands;
 
-    @ManyToMany(mappedBy = "actions", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JsonIgnore // Ignoruj przy serializacji, aby uniknąć rekurencji
+    @ManyToMany(mappedBy = "actions", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @JsonIgnore
     private Set<Volunteer> volunteers = new HashSet<>(); //T/R
 
-    @ManyToMany(mappedBy = "actions", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JsonIgnore // Ignoruj przy serializacji, aby uniknąć rekurencji
+    @ManyToMany(mappedBy = "actions", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @JsonIgnore
     private Set<Volunteer> determined = new HashSet<>(); //T
 
 

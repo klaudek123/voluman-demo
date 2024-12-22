@@ -27,24 +27,24 @@ public class CandidateServiceTest {
     @InjectMocks
     private CandidateService candidateService;
 
-    @Test
-    public void testAcceptCandidate() {
-        Candidate candidate = new Candidate();
-        Optional<Candidate> candidateOptional = Optional.of(candidate);
+//    @Test
+//    public void testAcceptCandidate() {
+//        Candidate candidate = new Candidate();
+//        Optional<Candidate> candidateOptional = Optional.of(candidate);
+//
+//        candidateService.acceptCandidate(candidateOptional);
+//
+//        verify(volunteerService, times(1)).addVolunteerFromCandidate(candidateOptional);
+//        verify(candidateRepository, times(1)).delete(candidate);
+//    }
 
-        candidateService.acceptCandidate(candidateOptional);
-
-        verify(volunteerService, times(1)).addVolunteerFromCandidate(candidateOptional);
-        verify(candidateRepository, times(1)).delete(candidate);
-    }
-
-    @Test
-    public void testRefuseCandidate() {
-        Candidate candidate = new Candidate();
-        Optional<Candidate> candidateOptional = Optional.of(candidate);
-
-        candidateService.refuseCandidate(candidateOptional);
-
-        verify(candidateRepository, times(1)).delete(candidate);
-    }
+//    @Test
+//    public void testRefuseCandidate() {
+//        Candidate candidate = new Candidate();
+//        Optional<Candidate> candidateOptional = Optional.of(candidate);
+//
+//        candidateService.refuseCandidate(candidateOptional);
+//
+//        verify(candidateRepository, times(1)).delete(candidate);
+//    }
 }

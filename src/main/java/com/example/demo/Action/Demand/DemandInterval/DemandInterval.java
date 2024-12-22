@@ -37,7 +37,7 @@ public class DemandInterval {
 
     @ManyToOne
     @JoinColumn(name = "demand_id")
-    @JsonBackReference // Odwrotny odnośnik, ignorowany przy serializacji
+    @JsonBackReference
     private Demand demand;
 
     @PrePersist
